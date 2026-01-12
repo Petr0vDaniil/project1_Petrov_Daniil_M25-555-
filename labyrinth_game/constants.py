@@ -79,3 +79,8 @@ COMMANDS = {
     "quit": "выйти из игры",
     "help": "показать это сообщение",
 }
+
+EVENT_PROBABILITY = 10
+EVENT_TYPES_COUNT = 3
+TRAP_DAMAGE_THRESHOLD = 3
+TRAP_DAMAGE_RANGE = 10

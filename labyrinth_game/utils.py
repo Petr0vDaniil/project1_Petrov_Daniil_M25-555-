@@ -7,12 +7,13 @@
 
 import math
 
-from labyrinth_game.constants import ROOMS
-
-EVENT_PROBABILITY = 10
-EVENT_TYPES_COUNT = 3
-TRAP_DAMAGE_THRESHOLD = 3
-TRAP_DAMAGE_RANGE = 10
+from labyrinth_game.constants import (
+    EVENT_PROBABILITY,
+    EVENT_TYPES_COUNT,
+    ROOMS,
+    TRAP_DAMAGE_RANGE,
+    TRAP_DAMAGE_THRESHOLD,
+)
 
 
 def pseudo_random(seed, modulo):
@@ -92,7 +93,7 @@ def random_event(game_state):
     room = ROOMS[current_room_name]
 
     if event_type == 0:
-        print("\n✨ Вы нашли монетку на полу!")
+        print("\nВы нашли монетку на полу!")
         room["items"].append("coin")
     elif event_type == 1:
         print("\n🎵 Вы слышите странный шорох...")
@@ -103,7 +104,7 @@ def random_event(game_state):
             current_room_name == "trap_room"
             and "torch" not in game_state["player_inventory"]
         ):
-            print("\n⚠️  Опасность! Вы активировали ловушку!")
+            print("\nОпасность! Вы активировали ловушку!")
             trigger_trap(game_state)
 
 
@@ -184,18 +185,18 @@ def solve_puzzle(game_state):
                 break
 
     if is_correct:
-        print("✓ Верно! Загадка решена!")
+        print("Верно! Загадка решена!")
         room["puzzle"] = None
 
         if current_room_name == "trap_room":
-            game_state["player_inventory"].append("treasure_key")
-            print("Вы получили: treasure_key")
+            game_state["player_inventory"].append("rusty_key")
+            print("Вы получили: rusty_key")
         elif current_room_name == "hall":
             game_state["player_inventory"].append("treasure_key")
             print("Вы получили: treasure_key")
         elif current_room_name == "library":
-            game_state["player_inventory"].append("treasure_key")
-            print("Вы получили: treasure_key")
+            game_state["player_inventory"].append("ancient_scroll")
+            print("Вы получили: ancient_scroll")
         elif current_room_name == "crystal_chamber":
             game_state["player_inventory"].append("crystal_key")
             print("Вы получили: crystal_key")
@@ -227,7 +228,7 @@ def attempt_open_treasure(game_state):
     if "treasure_key" in game_state["player_inventory"]:
         print("Вы применяете ключ, и замок щёлкает. Сундук открыт!")
         ROOMS["treasure_room"]["items"].remove("treasure_chest")
-        print("\n🎉 В сундуке сокровище! Вы победили!")
+        print("\nВ сундуке сокровище! Вы победили!")
         return True
 
     response = get_input("Сундук заперт. Ввести код? (да/нет): ").strip().lower()
@@ -238,7 +239,7 @@ def attempt_open_treasure(game_state):
         if room["puzzle"] and code == room["puzzle"][1]:
             print("✓ Правильный код! Сундук открыт!")
             ROOMS["treasure_room"]["items"].remove("treasure_chest")
-            print("\n🎉 В сундуке сокровище! Вы победили!")
+            print("\nВ сундуке сокровище! Вы победили!")
             return True
         else:
             print("✗ Неверный код.")
