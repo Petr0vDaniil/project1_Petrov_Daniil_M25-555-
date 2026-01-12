@@ -70,6 +70,12 @@ make lint
 asciinema play demo.cast
 ```
 
+Или можно посмотреть онлайн
+
+```bash
+https://asciinema.org/connect/e1fd65ba-343e-471a-b17f-8bf50f34f489
+```
+
 ## Автор
 
 Петров Даниил М25-555
