@@ -1,11 +1,11 @@
 # labyrinth_game/utils.py
 import math
 
-from labyrinth_game.constants import ROOMS
-
 
 def describe_current_room(game_state):
     """Вывести описание текущей комнаты."""
+    from labyrinth_game.constants import ROOMS
+
     current_room_name = game_state["current_room"]
     room = ROOMS[current_room_name]
 
@@ -25,6 +25,7 @@ def describe_current_room(game_state):
 
 def solve_puzzle(game_state):
     """Попытаться решить загадку в текущей комнате."""
+    from labyrinth_game.constants import ROOMS
     from labyrinth_game.player_actions import get_input
 
     current_room_name = game_state["current_room"]
@@ -40,13 +41,44 @@ def solve_puzzle(game_state):
     user_answer = get_input("Ваш ответ: ").strip().lower()
     correct_answer_lower = correct_answer.lower()
 
-    if user_answer == correct_answer_lower:
-        print("Верно! Загадка решена!")
+    answer_variants = {
+        "10": ["10", "десять"],
+        "шаг шаг шаг": ["шаг шаг шаг"],
+        "резонанс": ["резонанс"],
+        "луна": ["луна"],
+        "молчание": ["молчание"],
+    }
+
+    is_correct = False
+    for variants_list in answer_variants.values():
+        if user_answer in [v.lower() for v in variants_list]:
+            if correct_answer_lower in [v.lower() for v in variants_list]:
+                is_correct = True
+                break
+
+    if is_correct:
+        print("✓ Верно! Загадка решена!")
         room["puzzle"] = None
-        game_state["player_inventory"].append("treasure_key")
-        print("Вы получили: treasure_key")
+
+        if current_room_name == "trap_room":
+            game_state["player_inventory"].append("treasure_key")
+            print("Вы получили: treasure_key")
+        elif current_room_name == "hall":
+            game_state["player_inventory"].append("treasure_key")
+            print("Вы получили: treasure_key")
+        elif current_room_name == "library":
+            game_state["player_inventory"].append("treasure_key")
+            print("Вы получили: treasure_key")
+        elif current_room_name == "crystal_chamber":
+            game_state["player_inventory"].append("crystal_key")
+            print("Вы получили: crystal_key")
+        elif current_room_name == "underground_river":
+            game_state["player_inventory"].append("artifact_key")
+            print("Вы получили: artifact_key")
     else:
-        print("Неверно. Попробуйте снова.")
+        print("✗ Неверно. Попробуйте снова.")
+        if current_room_name == "trap_room":
+            trigger_trap(game_state)
 
 
 def attempt_open_treasure(game_state):
@@ -54,6 +86,7 @@ def attempt_open_treasure(game_state):
 
     Возвращает True если сундук открыт (победа).
     """
+    from labyrinth_game.constants import ROOMS
     from labyrinth_game.player_actions import get_input
 
     if "treasure_key" in game_state["player_inventory"]:
@@ -82,16 +115,11 @@ def attempt_open_treasure(game_state):
 
 def show_help():
     """Показать доступные команды."""
+    from labyrinth_game.constants import COMMANDS
+
     print("\nДоступные команды:")
-    print("  go <direction>  - перейти в направлении "
-          "(north/south/east/west)")
-    print("  look            - осмотреть текущую комнату")
-    print("  take <item>     - поднять предмет")
-    print("  use <item>      - использовать предмет из инвентаря")
-    print("  inventory       - показать инвентарь")
-    print("  solve           - попытаться решить загадку в комнате")
-    print("  quit            - выйти из игры")
-    print("  help            - показать это сообщение")
+    for command, description in COMMANDS.items():
+        print(f"  {command:<16} - {description}")
 
 
 def pseudo_random(seed, modulo):
@@ -135,6 +163,7 @@ def trigger_trap(game_state):
 
 def random_event(game_state):
     """Генерировать случайное событие при перемещении."""
+    from labyrinth_game.constants import ROOMS
     event_chance = pseudo_random(game_state['steps_taken'], 10)
 
     if event_chance != 0:
