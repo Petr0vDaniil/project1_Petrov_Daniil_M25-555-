@@ -1,4 +1,6 @@
 # labyrinth_game/utils.py
+import math
+
 from labyrinth_game.constants import ROOMS
 
 
@@ -91,3 +93,67 @@ def show_help():
     print("  quit            - выйти из игры")
     print("  help            - показать это сообщение")
 
+
+def pseudo_random(seed, modulo):
+    """Генерировать псевдослучайное число на основе синуса.
+
+    Args:
+        seed: целое число (например, количество шагов)
+        modulo: диапазон результата [0, modulo)
+
+    Returns:
+        целое число в диапазоне [0, modulo)
+    """
+    sin_value = math.sin(seed * 12.9898)
+    stretched = sin_value * 43758.5453
+    fractional_part = stretched - math.floor(stretched)
+    result = fractional_part * modulo
+    return int(result)
+
+
+def trigger_trap(game_state):
+    """Имитировать срабатывание ловушки."""
+    print("Ловушка активирована! Пол стал дрожать...")
+
+    inventory = game_state['player_inventory']
+
+    if inventory:
+        random_index = pseudo_random(
+            game_state['steps_taken'],
+            len(inventory)
+        )
+        lost_item = inventory.pop(random_index)
+        print(f"Вы потеряли: {lost_item}")
+    else:
+        random_damage = pseudo_random(game_state['steps_taken'], 10)
+        if random_damage < 3:
+            print("Ловушка нанесла смертельный урон! Вы погибли!")
+            game_state['game_over'] = True
+        else:
+            print("Вам удалось избежать опасности!")
+
+
+def random_event(game_state):
+    """Генерировать случайное событие при перемещении."""
+    event_chance = pseudo_random(game_state['steps_taken'], 10)
+
+    if event_chance != 0:
+        return
+
+    event_type = pseudo_random(game_state['steps_taken'] + 1, 3)
+
+    current_room_name = game_state['current_room']
+    room = ROOMS[current_room_name]
+
+    if event_type == 0:
+        print("\n✨ Вы нашли монетку на полу!")
+        room['items'].append('coin')
+    elif event_type == 1:
+        print("\n🎵 Вы слышите странный шорох...")
+        if 'sword' in game_state['player_inventory']:
+            print("Вы отпугиваете существо своим мечом!")
+    elif event_type == 2:
+        if (current_room_name == 'trap_room' and
+                'torch' not in game_state['player_inventory']):
+            print("\n⚠️  Опасность! Вы активировали ловушку!")
+            trigger_trap(game_state)
