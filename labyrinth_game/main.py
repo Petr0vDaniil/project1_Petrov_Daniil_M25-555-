@@ -4,7 +4,12 @@ from labyrinth_game.player_actions import (
     get_input,
     use_item,
 )
-from labyrinth_game.utils import describe_current_room
+from labyrinth_game.utils import (
+    attempt_open_treasure,
+    describe_current_room,
+    show_help,
+    solve_puzzle,
+)
 
 
 def process_command(game_state, command):
@@ -43,6 +48,14 @@ def process_command(game_state, command):
                 print("Укажите предмет для использования.")
             else:
                 use_item(game_state, arg)
+        case "solve":
+            if game_state["current_room"] == "treasure_room":
+                if attempt_open_treasure(game_state):
+                    return False
+            else:
+                solve_puzzle(game_state)
+        case "help":
+            show_help()
         case "quit" | "exit":
             return False
         case _:

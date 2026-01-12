@@ -45,6 +45,10 @@ def take_item(game_state, item_name):
     current_room_name = game_state['current_room']
     room = ROOMS[current_room_name]
 
+    if item_name == 'treasure_chest':
+        print("Вы не можете поднять сундук, он слишком тяжелый.")
+        return
+
     if item_name not in room['items']:
         print("Такого предмета здесь нет.")
         return
@@ -52,6 +56,7 @@ def take_item(game_state, item_name):
     game_state['player_inventory'].append(item_name)
     room['items'].remove(item_name)
     print(f"Вы подняли: {item_name}")
+
 
 
 def use_item(game_state, item_name):
