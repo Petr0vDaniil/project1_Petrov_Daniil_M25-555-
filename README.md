@@ -73,7 +73,7 @@ asciinema play demo.cast
 Или можно посмотреть онлайн
 
 ```bash
-https://asciinema.org/connect/e1fd65ba-343e-471a-b17f-8bf50f34f489
+https://asciinema.org/a/qRDsgTTaHCa42X9y
 ```
 
 ## Автор
