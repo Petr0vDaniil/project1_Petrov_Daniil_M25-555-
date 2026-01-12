@@ -1,7 +1,21 @@
-.venv/
-dist/
+# Python
 __pycache__/
 *.pyc
-.ruff_cache/
+*.pyo
+*.pyd
 *.egg-info/
 build/
+
+# Poetry
+.venv/
+dist/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*~
+
+# OS
+.DS_Store
+Thumbs.db
