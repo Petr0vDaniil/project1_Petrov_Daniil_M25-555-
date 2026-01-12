@@ -1,6 +1,10 @@
 # labyrinth_game/utils.py
 import math
 
+EVENT_PROBABILITY = 10
+EVENT_TYPES_COUNT = 3
+TRAP_DAMAGE_THRESHOLD = 3
+TRAP_DAMAGE_RANGE = 10
 
 def describe_current_room(game_state):
     """Вывести описание текущей комнаты."""
@@ -153,23 +157,27 @@ def trigger_trap(game_state):
         lost_item = inventory.pop(random_index)
         print(f"Вы потеряли: {lost_item}")
     else:
-        random_damage = pseudo_random(game_state['steps_taken'], 10)
-        if random_damage < 3:
+        random_damage = pseudo_random(
+            game_state['steps_taken'],
+            TRAP_DAMAGE_RANGE
+        )
+        if random_damage < TRAP_DAMAGE_THRESHOLD:
             print("Ловушка нанесла смертельный урон! Вы погибли!")
             game_state['game_over'] = True
         else:
             print("Вам удалось избежать опасности!")
 
 
+
 def random_event(game_state):
     """Генерировать случайное событие при перемещении."""
     from labyrinth_game.constants import ROOMS
-    event_chance = pseudo_random(game_state['steps_taken'], 10)
+    event_chance = pseudo_random(game_state['steps_taken'], EVENT_PROBABILITY)
 
     if event_chance != 0:
         return
 
-    event_type = pseudo_random(game_state['steps_taken'] + 1, 3)
+    event_type = pseudo_random(game_state['steps_taken'] + 1, EVENT_TYPES_COUNT)
 
     current_room_name = game_state['current_room']
     room = ROOMS[current_room_name]
